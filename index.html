@@ -1284,6 +1284,94 @@ const DEFAULT_DATA = {
   "projectEnd": "2026-12-31",
   "phases": [
     {
+      "id": "ph_dr_riyad",
+      "code": "د.ر",
+      "name": "متطلبات د. رياض الخاصة (مصنع الخزامى الصناعية)",
+      "description": "متطلبات جديدة مستخلصة من اجتماع العميل بتاريخ 6 مايو 2026 — للتطوير والتنفيذ على Odoo 19 Enterprise (Draft for Approval). بدأ العمل عليها بالفعل.",
+      "highlight": true,
+      "startDate": "2026-05-06",
+      "endDate": null,
+      "tasks": [
+        {
+          "id": "t_dr_01",
+          "name": "وحدة المشتريات — مقارنة الأسعار في طلبات الشراء (RFQ Price Comparison)",
+          "state": "in_progress",
+          "progress": 20,
+          "responsibility": "implementer",
+          "priority": 1,
+          "plannedDate": null,
+          "doneDate": null,
+          "notes": "إنشاء طلب عروض أسعار (RFQ) لعدة موردين على نفس المنتجات، وشاشة مقارنة جنباً إلى جنب (السعر، شروط الدفع، مدة التسليم، الإجمالي)، واعتماد العرض الأفضل ليتحوّل تلقائياً إلى أمر شراء (PO). | Create RFQs for multiple vendors, compare side-by-side, and auto-generate a Purchase Order from the chosen offer."
+        },
+        {
+          "id": "t_dr_02",
+          "name": "إدارة الدفعات — نظام الباتش المزدوج (Dual Batch Number)",
+          "state": "in_progress",
+          "progress": 25,
+          "responsibility": "implementer",
+          "priority": 1,
+          "plannedDate": null,
+          "doneDate": null,
+          "notes": "تفعيل حقلين لرقم الدفعة: Internal Batch (يُولَّد تلقائياً من Sequence للمستلمة والمصنّعة) و Vendor Batch (يُدخل يدوياً عند الاستلام)، لتحقيق التتبع الكامل من المورد حتى المنتج النهائي. فنياً: تخصيص على موديل stock.lot لإضافة حقل vendor_batch_number مع إبقاء Internal Batch كحقل name الافتراضي. | Two batch fields for full vendor-to-finished-good traceability; minor stock.lot customization."
+        },
+        {
+          "id": "t_dr_03",
+          "name": "الجودة وطباعة الملصقات — ستيكرات الجودة الثلاثية (Three-Tier QC Labels)",
+          "state": "in_progress",
+          "progress": 15,
+          "responsibility": "implementer",
+          "priority": 1,
+          "plannedDate": null,
+          "doneDate": null,
+          "notes": "عند الاستلام يُنشأ Quality Check لكل منتج وتُطبع ملصقات ملوّنة حسب الحالة: أصفر = في انتظار الفحص، أخضر = معتمد/تم الإفراج، أحمر = مرفوض. قاعدة طباعة حرجة: عدد الملصقات = عدد الكونتينرات/العبوات الفعلية في الشحنة وليس عدد المنتجات (مثال: منتجان × 4 عبوات = 8 ملصقات). فنياً: إضافة حقل container_count على سطر الاستلام + تطوير QWeb Report بمنطق تكرار t-foreach. | Color-coded QC labels; labels = container count, not product count."
+        },
+        {
+          "id": "t_dr_04",
+          "name": "وحدة التصنيع — أتمتة طلب صرف المواد (Auto Material Issue Voucher - MIV)",
+          "state": "in_progress",
+          "progress": 20,
+          "responsibility": "implementer",
+          "priority": 2,
+          "plannedDate": null,
+          "doneDate": null,
+          "notes": "عند إنشاء أمر تصنيع (MO) يُنشأ تلقائياً طلب MIV يضم كل مواد الـ BoM والكميات المطلوبة والموقع المصدر لكل منتج، ويُرسل إلى المستخدم المسؤول عن التحضير (Picker)؛ وعند التصديق على الـ MIV يُنشأ Internal Transfer تلقائياً من مواقع المواد إلى موقع التصنيع. | Auto MIV on MO creation dispatched to Picker; confirmation triggers Internal Transfer to Production Location."
+        },
+        {
+          "id": "t_dr_05",
+          "name": "وحدة التصنيع — صرف كميات إضافية لتعويض التلف (Over-Issue for Wastage)",
+          "state": "in_progress",
+          "progress": 15,
+          "responsibility": "implementer",
+          "priority": 1,
+          "plannedDate": null,
+          "doneDate": null,
+          "notes": "السماح بصرف كميات أكبر من الـ BoM تحسباً لحدوث تلف أو نواقص أثناء التصنيع؛ بعد انتهاء التصنيع تُحدَّث الكميات المستهلكة فعلياً (Actual Consumption) على الـ BoM، وتُرجع الكميات غير المستخدمة تلقائياً إلى مخزن التصنيع عبر Return Transfer. فنياً: تخصيص على mrp.production لإدارة الفرق بين Planned vs Actual مع Return Picking تلقائي. | Over-issue with auto Return Transfer of unused quantity; mrp.production customization."
+        },
+        {
+          "id": "t_dr_06",
+          "name": "وحدة التصنيع — التحكم في كمية المنتج النهائي قبل التصديق (Control of Finished Qty)",
+          "state": "in_progress",
+          "progress": 20,
+          "responsibility": "implementer",
+          "priority": 1,
+          "plannedDate": null,
+          "doneDate": null,
+          "notes": "إمكانية تعديل الكمية المنتجة فعلياً (qty_producing) للمنتج النهائي قبل الضغط على Mark as Done، للسماح بتسجيل الكمية الحقيقية الناتجة والتي قد تختلف عن الكمية المخططة. | Adjust qty_producing of the finished product before Mark as Done to record the real produced quantity."
+        },
+        {
+          "id": "t_dr_07",
+          "name": "التقارير — إعادة تسمية تقرير الفحص إلى Certificate of Analysis (COA)",
+          "state": "in_progress",
+          "progress": 30,
+          "responsibility": "implementer",
+          "priority": 0,
+          "plannedDate": null,
+          "doneDate": null,
+          "notes": "تغيير الاسم من Laboratory Test Report إلى Certificate of Analysis (COA) في جميع المواضع: عنوان التقرير، اسم القالب، القائمة الجانبية، وأي مرجع PDF. | Rename report to COA across report title, template name, sidebar menu, and all PDF references."
+        }
+      ]
+    },
+    {
       "id": "ph_acc",
       "code": "ACC",
       "name": "المحاسبة والتكاليف",
@@ -1898,7 +1986,7 @@ const DEFAULT_DATA = {
         {
           "id": "t_mobwlalfy1i3",
           "name": "تهيئة اعدادات المواد المستخدمة داخليا في المخازن وربطها بالحسابات المناسبة لكل عملية",
-          "state": "not_started",
+          "state": "in_progress",
           "progress": 50,
           "responsibility": "implementer",
           "priority": 2,
@@ -1920,7 +2008,7 @@ const DEFAULT_DATA = {
       ]
     }
   ],
-  "lastUpdate": "2026-06-26T19:46:22.343Z"
+  "lastUpdate": "2026-06-26T20:20:46.742Z"
 };
 </script>
 
